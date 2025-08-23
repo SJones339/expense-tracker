@@ -39,4 +39,17 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     
     def get_object(self):
-        return self
+        return self.request.user
+
+# accounts/urls.py - Updated with rate limited views
+
+from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
+from .views import UserRegistrationView, UserProfileView, CustomTokenObtainPairView
+
+urlpatterns = [
+    path('register/', UserRegistrationView.as_view(), name='user-register'),
+    path('login/', CustomTokenObtainPairView.as_view(), name='token-obtain-pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    path('profile/', UserProfileView.as_view(), name='user-profile'),
+]

@@ -58,7 +58,8 @@ class AccountViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Amount is required'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            amount = float(amount)
+            from decimal import Decimal
+            amount = Decimal(str(amount))
             account.balance += amount
             account.save()
             
