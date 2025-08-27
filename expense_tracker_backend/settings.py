@@ -194,7 +194,12 @@ REST_FRAMEWORK = {
 }
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000', 
+    'http://127.0.0.1:3000',
+    'http://localhost:5173',  # Add this for Vite dev server
+    'http://127.0.0.1:5173'   # Add this too
+]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']
 
