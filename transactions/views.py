@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Sum, Count, Q
 from django.utils import timezone
 from datetime import datetime, timedelta
+import traceback
 
 from .models import Transaction, Category, Account
 from .serializers import (
@@ -227,3 +228,59 @@ class TransactionViewSet(viewsets.ModelViewSet):
             'success_count': len(created_transactions),
             'error_count': len(errors)
         }, status=status.HTTP_201_CREATED if created_transactions else status.HTTP_400_BAD_REQUEST)
+    
+    #Update account balances when editing a transaction (revert old effect, add new effect)
+    def perform_create(self, serializer):
+        """Update account balance when creating a new transaction"""
+        transaction = serializer.save()
+        self._update_account_balance(transaction.account, transaction.amount, transaction.type, is_addition=True)
+    
+    def _update_account_balance(self, account, amount, transaction_type, is_addition=True):
+        """Helper method to update account balance"""
+        from decimal import Decimal
+        from django.utils import timezone
+    
+        # Debug logging with timestamp
+        print(f"DEBUG: [{timezone.now()}] Updating account balance")
+        print(f"  Account: {account.name}")
+        print(f"  Amount: {amount}")
+        print(f"  Type: {transaction_type}")
+        print(f"  Is Addition: {is_addition}")
+        print(f"  Current Balance: {account.balance}")
+        
+        #Convert amount to Decimal for precision
+        amount = Decimal(str(amount))
+        
+        #Calculate  effect whether its an income or expense
+        if transaction_type == 'income':
+            effect = amount if is_addition else -amount
+        else:  
+            effect = -amount if is_addition else amount
+        
+        # Update the account balance
+        account.balance += effect
+        account.save()
+        
+    def perform_update(self, serializer):
+        """Handle balance changes when editing a transaction"""
+        # Get the old transaction data before updating
+        old_transaction = self.get_object()
+        old_amount = old_transaction.amount
+        old_type = old_transaction.type
+        
+        # Save the updated transaction
+        transaction = serializer.save()
+        
+        # Use the SAME account object for both operations
+        account = transaction.account  # or old_transaction.account
+        
+        # Calculate the balance adjustment
+        # Remove old effect, add new effect
+        self._update_account_balance(account, old_amount, old_type, is_addition=False)
+        self._update_account_balance(account, transaction.amount, transaction.type, is_addition=True)
+    
+    def perform_destroy(self, instance):
+        """Update account balance when deleting a transaction"""
+        self._update_account_balance(instance.account, instance.amount, instance.type, is_addition=False)
+        instance.delete()
+    
