@@ -38,6 +38,8 @@ class Account(models.Model):
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=20, choices=ACCOUNT_TYPES)
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    currency = models.CharField(max_length=3, default='USD')  # ← Add this
+    description = models.TextField(blank=True, null=True)     # ← Add this
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accounts')
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -93,7 +95,7 @@ class Transaction(models.Model):
         super().save(*args, **kwargs)
         
         # Update account balance
-        self.update_account_balance()
+        #self.update_account_balance()
     
     def update_account_balance(self):
         """Update the account balance based on transaction type"""

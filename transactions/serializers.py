@@ -24,8 +24,8 @@ class AccountSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Account
-        fields = ['id', 'name', 'type', 'balance', 'is_active', 'transaction_count', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'balance', 'created_at', 'updated_at', 'transaction_count']
+        fields = ['id', 'name', 'type', 'balance', 'currency', 'description', 'is_active', 'transaction_count', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'transaction_count']
     
     def get_transaction_count(self, obj):
         return obj.transactions.filter(user=self.context['request'].user).count()

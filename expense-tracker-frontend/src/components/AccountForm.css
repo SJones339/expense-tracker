@@ -1,0 +1,23 @@
+/* AccountForm.css */
+.account-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.account-form input:focus,
+.account-form select:focus,
+.account-form textarea:focus {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.account-form button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.account-form .error {
+    color: #EF4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
