@@ -13,7 +13,6 @@ import {
     BarElement,
 } from 'chart.js';
 import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
 import { TrendingUp, TrendingDown, DollarSign, CreditCard } from 'lucide-react';
 
 // Register Chart.js components
@@ -224,7 +223,6 @@ const Analytics = () => {
             <div className="min-h-screen bg-gray-100">
                 <Header />
                 <div className="flex">
-                    <Sidebar />
                     <main className="flex-1 p-6">
                         <div className="flex justify-center items-center h-64">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -239,7 +237,6 @@ const Analytics = () => {
         <div className="min-h-screen bg-gray-100">
             <Header />
             <div className="flex">
-                <Sidebar />
                 <main className="flex-1 p-6">
                     <div className="max-w-7xl mx-auto">
                         {/* Header */}

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
 import CategoryForm from '../components/CategoryForm';
 import CategoryList from '../components/CategoryList';
 
@@ -34,7 +33,6 @@ const Categories = () => {
         <div className="min-h-screen bg-gray-50">
             <Header />
             <div className="flex">
-                <Sidebar />
                 <main className="flex-1 p-6">
                     <div className="bg-white rounded-lg shadow p-6">
                         <div className="flex justify-between items-center mb-6">
