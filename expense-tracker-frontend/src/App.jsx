@@ -8,24 +8,60 @@ import Categories from './pages/Categories';
 import Accounts from './pages/Accounts';
 import Analytics from './pages/Analytics';
 import './App.css';
+import Navbar from './components/Navbar';
+
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="App">
-          <Routes>
+        <div className="App pt-16">
+        <Routes>
             {/* Public routes - anyone can access */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
-            {/* Protected routes - only logged-in users can access */}
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
-            <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
-            <Route path="/accounts" element={<ProtectedRoute><Accounts /></ProtectedRoute>} />
-            <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-            
+            {/* Protected routes with Navbar */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <div>
+                  <Navbar />
+                  <Dashboard />
+                </div>
+              </ProtectedRoute>
+            } />
+            <Route path="/transactions" element={
+              <ProtectedRoute>
+                <div>
+                  <Navbar />
+                  <Transactions />
+                </div>
+              </ProtectedRoute>
+            } />
+            <Route path="/categories" element={
+              <ProtectedRoute>
+                <div>
+                  <Navbar />
+                  <Categories />
+                </div>
+              </ProtectedRoute>
+            } />
+            <Route path="/accounts" element={
+              <ProtectedRoute>
+                <div>
+                  <Navbar />
+                  <Accounts />
+                </div>
+              </ProtectedRoute>
+            } />
+            <Route path="/analytics" element={
+              <ProtectedRoute>
+                <div>
+                  <Navbar />
+                  <Analytics />
+                </div>
+              </ProtectedRoute>
+            } />
             
             {/* Redirect root to dashboard if logged in, otherwise to login */}
             <Route 

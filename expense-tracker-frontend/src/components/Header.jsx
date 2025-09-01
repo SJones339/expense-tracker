@@ -17,9 +17,7 @@ const Header = () => {
         <div className="flex justify-between items-center py-4">
           {/* Logo/Brand */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-indigo-600">
-              💰 Expense Tracker
-            </h1>
+
           </div>
 
           {/* User Menu */}
