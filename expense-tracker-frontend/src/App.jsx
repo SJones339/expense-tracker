@@ -9,6 +9,8 @@ import Accounts from './pages/Accounts';
 import Analytics from './pages/Analytics';
 import './App.css';
 import Navbar from './components/Navbar';
+import BudgetAllocator from './pages/BudgetAllocator';
+
 
 
 function App() {
@@ -59,6 +61,14 @@ function App() {
                 <div>
                   <Navbar />
                   <Analytics />
+                </div>
+              </ProtectedRoute>
+            } />
+            <Route path="/budgets" element={
+              <ProtectedRoute>
+                <div>
+                  <Navbar />
+                  <BudgetAllocator />
                 </div>
               </ProtectedRoute>
             } />

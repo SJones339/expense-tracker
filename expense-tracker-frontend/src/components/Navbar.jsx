@@ -6,6 +6,7 @@ const navItems = [
   { name: "Categories", href: "/categories", icon: "🏷️" },
   { name: "Accounts", href: "/accounts", icon: "🏦" },
   { name: "Analytics", href: "/analytics", icon: "📈" },
+  { name: "Budgets", href: "/budgets", icon: "💰" },
 ];
 
 const Navbar = () => {
