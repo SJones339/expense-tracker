@@ -34,6 +34,64 @@ class BucketViewSet(viewsets.ModelViewSet):
         
         serializer = TransactionListSerializer(income_transactions, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=["post"])
+    def allocate_money(self, request, pk=None):
+        """
+        Add or remove money from a specific bucket
+        Body: { amount: number, transaction_type: "add" or "remove" }
+        """
+        bucket = self.get_object()
+        amount = request.data.get("amount", 0)
+        transaction_type = request.data.get("transaction_type", "add")
+        
+        if not amount or amount <= 0:
+            return Response({"error": "Amount must be positive"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if transaction_type not in ["add", "remove"]:
+            return Response({"error": "Transaction type must be 'add' or 'remove'"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if removing more than available
+        if transaction_type == "remove" and amount > bucket.current_balance:
+            return Response({"error": "Cannot remove more than current balance"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Update bucket balance
+        if transaction_type == "add":
+            bucket.current_balance += amount
+        else:
+            bucket.current_balance -= amount
+        
+        bucket.save()
+        
+        return Response({
+            "success": True,
+            "new_balance": bucket.current_balance,
+            "message": f"Successfully added ${amount} to {bucket.name}" if transaction_type == "add" else f"Successfully removed ${amount} from {bucket.name}"
+        })
+
+    @action(detail=True, methods=["delete"])
+    def delete_bucket(self, request, pk=None):
+        """
+        Delete a specific bucket and return any money to unallocated
+        """
+        bucket = self.get_object()
+        bucket_name = bucket.name
+        money_in_bucket = bucket.current_balance
+        
+        # Delete the bucket (this will automatically handle the money)
+        bucket.delete()
+        
+        # Create a message based on whether there was money in the bucket
+        if money_in_bucket > 0:
+            message = f"Bucket '{bucket_name}' deleted successfully. ${money_in_bucket} returned to unallocated money."
+        else:
+            message = f"Bucket '{bucket_name}' deleted successfully."
+        
+        return Response({
+            "success": True,
+            "message": message,
+            "money_returned": float(money_in_bucket)
+        })
 
 class PaycheckViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
