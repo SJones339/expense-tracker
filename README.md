@@ -6,21 +6,6 @@
 
 A comprehensive expense tracking application built with Django REST API backend and React frontend. Users can track income, expenses, manage categories, monitor account balances, and analyze spending patterns with detailed analytics.
 
-## ��️ Project Structure
-expense-tracker/
-├── expense_tracker_backend/ # Django REST API Backend
-│ ├── accounts/ # User authentication & management
-│ ├── transactions/ # Core expense tracking logic
-│ └── expense_tracker_backend/ # Django project settings
-└── expense-tracker-frontend/ # React Frontend Application
-├── src/
-│ ├── components/ # Reusable UI components
-│ ├── pages/ # Full page components
-│ ├── context/ # Global state management
-│ ├── services/ # API calls & external services
-│ ├── utils/ # Helper functions
-│ └── hooks/ # Custom React hooks
-└── package.json # Frontend dependencies
 
 
 ## �� Features
@@ -67,7 +52,7 @@ expense-tracker/
 - `GET/PUT /api/auth/profile/` - User profile management
 
 ### Transactions
-- `GET/POST /api/transactions/` - CRUD operations
+- `GET/POST /api/transactions/`
 - `GET /api/transactions/summary/` - Monthly summaries
 - `GET /api/transactions/analytics/` - Detailed analytics
 - `POST /api/transactions/bulk_create/` - Bulk operations
@@ -76,7 +61,7 @@ expense-tracker/
 - Full CRUD operations for both models
 - Custom actions (by_type, adjust_balance)
 
-## 🚀 Getting Started
+##Getting Started
 
 ### Backend Setup
 ```bash
@@ -92,21 +77,3 @@ cd expense-tracker-frontend
 npm install
 npm run dev
 ```
-
-## 📚 Learning Focus
-
-This project demonstrates:
-- **Full-stack development** with Django + React
-- **JWT authentication** implementation
-- **REST API design** best practices
-- **Modern React patterns** (hooks, context, functional components)
-- **State management** without external libraries
-- **API integration** between frontend and backend
-
-## �� Development Status
-
-- ✅ **Backend Complete** - All API endpoints working
-- 🔄 **Frontend In Progress** - Setting up React foundation
-- ⏳ **Authentication UI** - Next step
-- ⏳ **Core Features** - Dashboard, transactions, analytics
-- ⏳ **Production Deployment** - Final step
