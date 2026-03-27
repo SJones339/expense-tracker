@@ -1,0 +1,31 @@
+meta {
+  name: CreateTransaction
+  type: http
+  seq: 11
+}
+
+post {
+  url: http://localhost:8000/api/transactions/
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1ODkwMjY5LCJpYXQiOjE3NTU4ODk5NjksImp0aSI6ImNiNWUxMmYxZGYzMjQwZTJhZjkxYjE4MzUzYjBjNjA5IiwidXNlcl9pZCI6IjQifQ.BlGDz7gYNgS_wosQcjkVEEsFkhNULFospD4mJk4UeKc
+}
+
+body:json {
+  {
+    "amount": 45.75,
+    "description": "Dinner at Italian Restaurant",
+    "type": "expense",
+    "date": "2024-01-15T19:30:00Z",
+    "category_id": 45,
+    "account_id": 3,
+    "notes": "Business dinner with client"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

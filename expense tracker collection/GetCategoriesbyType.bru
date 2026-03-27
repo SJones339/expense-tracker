@@ -1,0 +1,19 @@
+meta {
+  name: GetCategoriesbyType
+  type: http
+  seq: 7
+}
+
+get {
+  url: http://localhost:8000/api/categories/by_type/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1ODIyMzEzLCJpYXQiOjE3NTU4MjIwMTMsImp0aSI6ImM3N2E0YTc1ZDQ5OTQ5NjZiZTljMDEyZWM0MWRjNmVlIiwidXNlcl9pZCI6IjQifQ.l8lTlk-3fnpZselkPDAsH1wDeAiLIar4iuocLjTVp7E
+}
+
+settings {
+  encodeUrl: true
+}

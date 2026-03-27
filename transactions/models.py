@@ -98,12 +98,27 @@ class Transaction(models.Model):
         #self.update_account_balance()
     
     def update_account_balance(self):
-        """Update the account balance based on transaction type"""
+        """Update the account balance based on transaction type
+        Note: Credit cards work differently - balance represents what you OWE
+        """
+        is_credit_card = self.account.type == 'credit'
+        
         if self.type == 'income':
-            self.account.balance += self.amount
+            # For credit cards: payment decreases debt (balance goes down)
+            # For other accounts: income increases balance
+            if is_credit_card:
+                self.account.balance -= self.amount
+            else:
+                self.account.balance += self.amount
         elif self.type == 'expense':
-            self.account.balance -= self.amount
+            # For credit cards: expense increases debt (balance goes up)
+            # For other accounts: expense decreases balance
+            if is_credit_card:
+                self.account.balance += self.amount
+            else:
+                self.account.balance -= self.amount
         elif self.type == 'transfer' and self.transfer_to_account:
+            # Transfers work the same for all account types
             self.account.balance -= self.amount
             self.transfer_to_account.balance += self.amount
             self.transfer_to_account.save()

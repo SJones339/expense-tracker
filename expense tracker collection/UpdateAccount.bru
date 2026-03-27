@@ -1,0 +1,15 @@
+meta {
+  name: UpdateAccount
+  type: http
+  seq: 17
+}
+
+put {
+  url: http://localhost:8000/api/accounts/3/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

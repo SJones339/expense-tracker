@@ -236,13 +236,17 @@ class TransactionViewSet(viewsets.ModelViewSet):
         self._update_account_balance(transaction.account, transaction.amount, transaction.type, is_addition=True)
     
     def _update_account_balance(self, account, amount, transaction_type, is_addition=True):
-        """Helper method to update account balance"""
+        """Helper method to update account balance
+        For credit cards: balance represents what you OWE (positive = debt, negative = credit)
+        For other accounts: balance represents what you HAVE (positive = money, negative = overdraft)
+        """
         from decimal import Decimal
         from django.utils import timezone
     
         # Debug logging with timestamp
         print(f"DEBUG: [{timezone.now()}] Updating account balance")
         print(f"  Account: {account.name}")
+        print(f"  Account Type: {account.type}")
         print(f"  Amount: {amount}")
         print(f"  Type: {transaction_type}")
         print(f"  Is Addition: {is_addition}")
@@ -251,11 +255,24 @@ class TransactionViewSet(viewsets.ModelViewSet):
         #Convert amount to Decimal for precision
         amount = Decimal(str(amount))
         
-        #Calculate  effect whether its an income or expense
-        if transaction_type == 'income':
-            effect = amount if is_addition else -amount
-        else:  
-            effect = -amount if is_addition else amount
+        # Credit cards work differently - balance represents what you OWE
+        # Positive balance = you owe money, Negative balance = you have credit
+        is_credit_card = account.type == 'credit'
+        
+        if is_credit_card:
+            # For credit cards: expense increases debt (balance goes up), payment decreases debt (balance goes down)
+            if transaction_type == 'expense':
+                # Spending increases what you owe
+                effect = amount if is_addition else -amount
+            else:  # income/payment
+                # Payment decreases what you owe
+                effect = -amount if is_addition else amount
+        else:
+            # For regular accounts: expense decreases balance, income increases balance
+            if transaction_type == 'income':
+                effect = amount if is_addition else -amount
+            else:  # expense
+                effect = -amount if is_addition else amount
         
         # Update the account balance
         account.balance += effect

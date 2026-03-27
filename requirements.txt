@@ -13,4 +13,6 @@ django-filter==23.5
 sqlparse==0.5.3
 
 dj-rest-auth==2.2.5
+plaid-python==9.0.0
 
+python-dotenv>=1.0.1

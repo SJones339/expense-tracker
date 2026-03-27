@@ -1,0 +1,15 @@
+meta {
+  name: DeleteCategory
+  type: http
+  seq: 18
+}
+
+delete {
+  url: http://localhost:8000/api/categories/1/
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

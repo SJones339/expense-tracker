@@ -1,0 +1,42 @@
+meta {
+  name: BulkCreateTransactions
+  type: http
+  seq: 15
+}
+
+post {
+  url: http://localhost:8000/api/transactions/bulk_create/
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1ODkwNTgxLCJpYXQiOjE3NTU4OTAyODEsImp0aSI6IjEzYzU3YmViN2YxYjQ1MTViNWE3MDMyYmUyOThhYmZkIiwidXNlcl9pZCI6IjQifQ.SFG62XDSFZBHr-7Tz16QIGxDloJ7LXrGAk-LNxj_9BU
+}
+
+body:json {
+  {
+    "transactions": [
+      {
+        "amount": 12.50,
+        "description": "Morning Coffee",
+        "type": "expense",
+        "date": "2024-01-16T08:00:00Z",
+        "category_id": 37,
+        "account_id": 3
+      },
+      {
+        "amount": 25.00,
+        "description": "Lunch",
+        "type": "expense",
+        "date": "2024-01-16T12:00:00Z",
+        "category_id": 38,
+        "account_id": 3
+      }
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+}
