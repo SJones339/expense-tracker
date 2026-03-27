@@ -9,6 +9,7 @@ const $ = (n) => new Intl.NumberFormat("en-US", { style: "currency", currency: "
 export default function BudgetAllocator() {
     const [buckets, setBuckets] = useState([]);
     const [incomeTransactions, setIncomeTransactions] = useState([]);
+    const [accounts, setAccounts] = useState([]);
     const [alloc, setAlloc] = useState({}); // {bucketId: number}
     const [isSaving, setIsSaving] = useState(false);
     const [notification, setNotification] = useState({ show: false, message: "", type: "success" });
@@ -57,10 +58,34 @@ export default function BudgetAllocator() {
         })();
     }, [token]);
 
-  // Calculate total income
-    const totalIncome = useMemo(
-        () => incomeTransactions.reduce((sum, t) => sum + (Number(t.amount) || 0), 0),
-        [incomeTransactions]
+  // Load accounts for unallocated balance calculation
+    useEffect(() => {
+        (async () => {
+        try {
+            const res = await fetch("http://localhost:8000/api/accounts/", {
+            headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            if (!res.ok) {
+            throw new Error(`Failed to load accounts: ${res.status}`);
+            }
+            
+            const data = await res.json();
+            setAccounts(data.results || data);
+        } catch (error) {
+            console.error("Error loading accounts:", error.message);
+            setAccounts([]); // Set empty array on error
+        }
+        })();
+    }, [token]);
+
+  // Calculate total available money from accounts (excluding credit cards)
+    // Credit cards represent debt, not available money
+    const totalAvailable = useMemo(
+        () => accounts
+            .filter(acc => acc.type !== 'credit') // Exclude credit cards
+            .reduce((sum, acc) => sum + (Number(acc.balance) || 0), 0),
+        [accounts]
     );
 
   // Calculate total allocated across all buckets (from actual bucket balances)
@@ -70,7 +95,8 @@ export default function BudgetAllocator() {
     );
   
   // Calculate remaining unallocated money
-    const remaining = totalIncome - totalAllocated;
+    // Unallocated = Total available cash - Total allocated to buckets
+    const remaining = totalAvailable - totalAllocated;
 
   // Create bucket
     async function createBucket(e) {
@@ -216,6 +242,9 @@ export default function BudgetAllocator() {
                 <div className="mt-2 text-lg font-semibold text-green-700">
                 {$(remaining)}
                 </div>
+                <div className="mt-1 text-xs text-green-600">
+                    Based on account balances (excluding credit cards)
+                </div>
                 </div>
 
                 {/* Income Transactions List */}
@@ -272,8 +301,11 @@ export default function BudgetAllocator() {
                             </div>
                         <div className="mt-2 h-2 w-full bg-gray-200 rounded-full overflow-hidden">
                             <div
-                            className="h-full bg-blue-600"
-                            style={{ width: `${pct}%` }}
+                            className="h-full"
+                            style={{ 
+                                width: `${pct}%`,
+                                backgroundColor: b.color || '#3b82f6' // Use bucket's color, default to blue
+                            }}
                             />
                         </div>
                         <div className="mt-2 flex items-center justify-between text-sm">

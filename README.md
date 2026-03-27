@@ -1,79 +1,106 @@
-#Setup
+# Expense Tracker
 
-# Expense Tracker Application
+A full‑stack expense tracker built with a Django REST API backend and a React (Vite) frontend. The goal of this project is to make day‑to‑day money tracking fast and “visual”: you can connect accounts (manual or Plaid sandbox), import transactions, categorize spending, and then see how it rolls up into accounts, analytics, and budgets.
 
-## 🎯 Project Goal
+## What you can do in the app
 
-A comprehensive expense tracking application built with Django REST API backend and React frontend. Users can track income, expenses, manage categories, monitor account balances, and analyze spending patterns with detailed analytics.
+This app is designed around a simple workflow: track accounts → record/import transactions → categorize them → view summaries and allocate money into budget buckets. The UI is intentionally straightforward so you can demo it quickly (create a user, connect a sandbox bank, sync, and immediately see the rest of the product update).
 
+## Accounts & balances
 
+Accounts are the foundation of the app. You can create accounts manually (checking, savings, cash, investment, credit), or create them automatically when importing via Plaid. Balances update as transactions are created/edited/deleted, and credit card balances follow “debt-style” logic (spending increases what you owe; payments decrease it).
 
-## �� Features
+## Transactions & categories
 
-### Backend (Django REST API)
-- **JWT Authentication** - Secure user login with token-based auth
-- **User Management** - Registration, login, profile management
-- **Transaction Tracking** - Income, expenses, transfers between accounts
-- **Category Management** - Customizable transaction categories
-- **Account Management** - Multiple financial accounts with balance tracking
-- **Analytics** - Monthly summaries, spending trends, category breakdowns
-- **Rate Limiting** - Protection against abuse
-- **Data Validation** - Comprehensive input validation and error handling
+Transactions support income, expenses, and transfers. Categories are user-owned, and the API enforces consistency (e.g., an expense transaction must use an expense category). When importing from Plaid, transactions are first cached and then converted into the app’s native `Transaction` records so they appear everywhere (transactions list, dashboard, analytics).
 
-### Frontend (React)
-- **Modern UI** - Built with React 18 and Vite
-- **Responsive Design** - Works on desktop and mobile
-- **Protected Routes** - Secure navigation based on authentication
-- **Real-time Updates** - Live data from Django API
-- **Interactive Charts** - Visual representation of financial data
+## Analytics
 
-## �� Technology Stack
+Analytics pages summarize your spending/income patterns over time and by category. These views are built on the same transaction data, so anything you add manually or import via Plaid automatically feeds the charts.
+
+## Budgets (bucket allocator)
+
+Budgets use a bucket model: you allocate available money into named buckets (e.g., Groceries, Rent, Savings). Bucket progress bars use the bucket’s chosen color, and “Unallocated Money” is calculated from **account balances (excluding credit cards)** minus what you’ve allocated into buckets—so it reflects real available cash rather than “income total”.
+
+## Plaid integration (portfolio-safe demo)
+
+This project integrates Plaid primarily for **sandbox demos**. In sandbox mode, you can connect a fake institution, sync test transactions, and watch them flow through the app exactly like real imports—without using real bank credentials or real financial data.
+
+Plaid flow in this app:
+- Connect → exchange public token → store Plaid accounts
+- Sync → cache Plaid transactions
+- Convert → create native app `Account` + `Transaction` records so the rest of the product updates
+
+## Getting started (local)
 
 ### Backend
-- **Django 5.2.5** - Web framework
-- **Django REST Framework** - API framework
-- **JWT Authentication** - Secure token-based auth
-- **SQLite** - Development database
-- **PostgreSQL** - Production database ready
 
-### Frontend
-- **React 18** - UI library
-- **Vite** - Build tool and dev server
-- **React Router** - Client-side routing
-- **Axios** - HTTP client for API calls
-- **Context API** - State management
+Run the API with your virtualenv enabled:
 
-## �� API Endpoints
-
-### Authentication
-- `POST /api/auth/register/` - User registration
-- `POST /api/auth/login/` - User login
-- `POST /api/auth/token/refresh/` - Refresh JWT tokens
-- `GET/PUT /api/auth/profile/` - User profile management
-
-### Transactions
-- `GET/POST /api/transactions/`
-- `GET /api/transactions/summary/` - Monthly summaries
-- `GET /api/transactions/analytics/` - Detailed analytics
-- `POST /api/transactions/bulk_create/` - Bulk operations
-
-### Categories & Accounts
-- Full CRUD operations for both models
-- Custom actions (by_type, adjust_balance)
-
-##Getting Started
-
-### Backend Setup
 ```bash
-cd expense_tracker_backend
+cd /Users/stephenjones/Desktop/expense-tracker
+source venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 ```
 
-### Frontend Setup
+### Frontend
+
+Run the React app:
+
 ```bash
-cd expense-tracker-frontend
+cd /Users/stephenjones/Desktop/expense-tracker/expense-tracker-frontend
 npm install
 npm run dev
 ```
+
+## Plaid (sandbox) setup
+
+Create a `.env` file in the project root:
+
+```text
+PLAID_CLIENT_ID=your_client_id
+PLAID_SECRET=your_secret
+PLAID_ENV=sandbox
+```
+
+Get credentials from [Plaid Dashboard](https://dashboard.plaid.com/).
+
+### Sandbox test logins
+
+Use these in Plaid Link for demo data:
+- **Username**: `user_transactions_dynamic`
+- **Password**: `pass_good`
+
+You can also search for sandbox institutions like “First Platypus Bank” to get pre-populated transactions.
+
+## API quick reference
+
+These are the main endpoints you’ll hit from the frontend:
+
+- **Auth**
+  - `POST /api/auth/register/`
+  - `POST /api/auth/login/`
+  - `POST /api/auth/token/refresh/`
+  - `GET/PUT /api/auth/profile/`
+
+- **Plaid**
+  - `POST /api/plaid/create-link-token/`
+  - `POST /api/plaid/exchange-token/`
+  - `POST /api/plaid/sync-transactions/`
+  - `POST /api/plaid/convert-transactions/`
+  - `GET /api/plaid/accounts/`
+  - `DELETE /api/plaid/accounts/<id>/disconnect/`
+
+- **Core**
+  - `GET/POST /api/transactions/`
+  - `GET/POST /api/accounts/`
+  - `GET/POST /api/categories/`
+  - `GET /api/transactions/summary/`
+  - `GET /api/transactions/analytics/`
+  - `GET/POST /api/budgets/buckets/`
+
+## Notes
+
+- This repo is intended for local development + portfolio demos. For a real production deployment, you’d add standard hardening (HTTPS, production settings, encrypted secrets at rest, etc.).

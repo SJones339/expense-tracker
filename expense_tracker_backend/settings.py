@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accounts',
     'transactions',
     'budgets',
+    'plaid_integration',
 ]
 
 MIDDLEWARE = [

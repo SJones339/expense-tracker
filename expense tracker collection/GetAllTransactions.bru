@@ -1,0 +1,19 @@
+meta {
+  name: GetAllTransactions
+  type: http
+  seq: 12
+}
+
+get {
+  url: http://localhost:8000/api/transactions/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1ODkwMjY5LCJpYXQiOjE3NTU4ODk5NjksImp0aSI6ImNiNWUxMmYxZGYzMjQwZTJhZjkxYjE4MzUzYjBjNjA5IiwidXNlcl9pZCI6IjQifQ.BlGDz7gYNgS_wosQcjkVEEsFkhNULFospD4mJk4UeKc
+}
+
+settings {
+  encodeUrl: true
+}

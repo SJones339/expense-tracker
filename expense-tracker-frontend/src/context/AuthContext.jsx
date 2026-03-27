@@ -91,6 +91,23 @@ export const AuthProvider = ({ children }) => {
         }
       } else {
         const errorData = await response.json();
+        
+        // Handle validation errors from Django REST Framework
+        if (errorData.non_field_errors) {
+          return { success: false, error: errorData.non_field_errors[0] };
+        } else if (typeof errorData === 'object' && !errorData.detail) {
+          // Field-specific errors
+          const errorMessages = [];
+          for (const [field, messages] of Object.entries(errorData)) {
+            if (Array.isArray(messages)) {
+              errorMessages.push(`${field}: ${messages[0]}`);
+            } else {
+              errorMessages.push(`${field}: ${messages}`);
+            }
+          }
+          return { success: false, error: errorMessages.join(', ') || 'Login failed' };
+        }
+        
         return { success: false, error: errorData.detail || 'Login failed' };
       }
     } catch (error) {
@@ -123,7 +140,29 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       } else {
         const errorData = await response.json();
-        return { success: false, error: errorData.detail || 'Registration failed' };
+        
+        // Handle validation errors from Django REST Framework
+        // Validation errors come as an object with field names as keys
+        if (errorData.non_field_errors) {
+          // Non-field errors (e.g., "Passwords don't match")
+          return { success: false, error: errorData.non_field_errors[0] };
+        } else if (typeof errorData === 'object') {
+          // Field-specific errors - combine them into a readable message
+          const errorMessages = [];
+          for (const [field, messages] of Object.entries(errorData)) {
+            if (Array.isArray(messages)) {
+              errorMessages.push(`${field}: ${messages[0]}`);
+            } else {
+              errorMessages.push(`${field}: ${messages}`);
+            }
+          }
+          return { success: false, error: errorMessages.join(', ') || 'Registration failed' };
+        } else if (errorData.detail) {
+          // Other error types with a detail field
+          return { success: false, error: errorData.detail };
+        }
+        
+        return { success: false, error: 'Registration failed' };
       }
     } catch (error) {
       console.error('Registration error:', error);

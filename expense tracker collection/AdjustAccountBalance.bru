@@ -1,0 +1,26 @@
+meta {
+  name: AdjustAccountBalance
+  type: http
+  seq: 10
+}
+
+post {
+  url: http://localhost:8000/api/accounts/3/adjust_balance/
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU1ODg5NDMyLCJpYXQiOjE3NTU4ODkxMzIsImp0aSI6Ijg4YzdiMGE5MGZiNzRjY2M4MzhlY2EzMmFjNGY1ZmYyIiwidXNlcl9pZCI6IjQifQ.IUE2gY6SOG5Vb8ZlYO0HUoKUpICtJKYlVIFlR3LlKw0
+}
+
+body:json {
+  {
+    "amount": 500.00,
+    "reason": "Monthly deposit"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

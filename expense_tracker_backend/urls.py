@@ -9,7 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('accounts.urls')),
     path('api/', include('transactions.urls')),
-    path("api/budgets/", include("budgets.urls"))
+    path("api/budgets/", include("budgets.urls")),
+    path('api/plaid/', include('plaid_integration.urls')),
 ]
 
 # Serve media files in development
