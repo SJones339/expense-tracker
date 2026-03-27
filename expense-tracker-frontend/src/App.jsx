@@ -10,6 +10,7 @@ import Analytics from './pages/Analytics';
 import './App.css';
 import Navbar from './components/Navbar';
 import BudgetAllocator from './pages/BudgetAllocator';
+import PlaidIntegration from './pages/PlaidIntegration';
 
 
 
@@ -69,6 +70,14 @@ function App() {
                 <div>
                   <Navbar />
                   <BudgetAllocator />
+                </div>
+              </ProtectedRoute>
+            } />
+            <Route path="/plaid" element={
+              <ProtectedRoute>
+                <div>
+                  <Navbar />
+                  <PlaidIntegration />
                 </div>
               </ProtectedRoute>
             } />
